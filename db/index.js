@@ -8,7 +8,7 @@ Journal.belongsTo(User, { foreignKey: "ownerId" });
 Journal.hasMany(Text);
 Text.belongsTo(Journal);
 User.hasMany(Text);
-Text.belongsTo(User, { foreignKey: "ownerd" });
+Text.belongsTo(User, { foreignKey: "ownerId" });
 
 module.exports = {
   User,
