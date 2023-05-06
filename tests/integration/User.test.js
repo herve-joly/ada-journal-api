@@ -31,6 +31,7 @@ describe("User model", () => {
     it("should create a new user", async () => {
       const user = await User.create({
         username: "John Doe",
+        password: "test",
       });
       expect(user.id).toBeDefined();
       expect(user.username).toEqual("John Doe");
@@ -39,6 +40,7 @@ describe("User model", () => {
     it("should read an existing user", async () => {
       const user = await User.create({
         username: "Jane Doe",
+        password: "test",
       });
       const result = await User.findOne({ where: { id: user.id } });
       expect(result).toBeDefined();
@@ -48,6 +50,7 @@ describe("User model", () => {
     it("should update an existing user", async () => {
       const user = await User.create({
         username: "Jack Doe",
+        password: "test",
       });
       await user.update({ username: "Jackson Doe" });
       const result = await User.findOne({ where: { id: user.id } });
@@ -58,6 +61,7 @@ describe("User model", () => {
     it("should delete an existing user", async () => {
       const user = await User.create({
         username: "Jim Doe",
+        password: "test",
       });
       await user.destroy();
       const result = await User.findOne({ where: { id: user.id } });

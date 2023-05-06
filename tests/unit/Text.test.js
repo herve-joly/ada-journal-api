@@ -21,13 +21,12 @@ describe("Text model", () => {
     const journal = await Journal.create({
       title: "My Journal 2",
       ownerId: user.id,
-      journalId: journal.id, // set the journalId field explicitly
     });
 
     const text = await Text.create({
       title: "My Journal 2",
-      journalId: journal.id, // set the journalId field explicitly
-      ownerId: user.id,
+      JournalId: journal.id, // set the journalId field explicitly
+      UserId: user.id,
     });
 
     expect(text.id).toBeDefined();
@@ -37,7 +36,7 @@ describe("Text model", () => {
 
     // check if the journal belongs to the user
 
-    expect(text.ownerId).toBe(user.id);
-    expect(text.journalId).toBe(journal.id);
+    expect(text.UserId).toBe(user.id);
+    expect(text.JournalId).toBe(journal.id);
   });
 });

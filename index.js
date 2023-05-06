@@ -1,4 +1,7 @@
 const express = require("express");
+const Userroute = require("./routes/userRoute");
+const Journalroute = require("./routes/journalRoute");
+const Textroute = require("./routes/textRoute");
 
 const app = express();
 
@@ -14,34 +17,8 @@ app.get("/", async (req, res, next) => {
   }
 });
 
-app.get("/users", async (req, res, next) => {
-  try {
-    const users = await User.findAll();
-    res.send(users);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-app.get("/journals", async (req, res, next) => {
-  try {
-    const journals = await Journal.findAll();
-    res.send(journals);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
-app.get("/texts", async (req, res, next) => {
-  try {
-    const journals = await Text.findAll();
-    res.send(texts);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
+app.use("/api/users", Userroute);
+app.use("/api/journals", Journalroute);
+app.use("/api/texts", Textroute);
 
 module.exports = app;
