@@ -4,11 +4,11 @@ const { Text } = require("../models/Text");
 const { sequelize, Sequelize } = require("./db");
 
 User.hasMany(Journal);
-Journal.belongsTo(User, { foreignKey: "ownerId" });
+Journal.belongsTo(User);
 Journal.hasMany(Text);
 Text.belongsTo(Journal);
 User.hasMany(Text);
-Text.belongsTo(User, { foreignKey: "ownerId" });
+Text.belongsTo(User);
 
 module.exports = {
   User,
