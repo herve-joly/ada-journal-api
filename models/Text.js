@@ -1,10 +1,13 @@
 const { Sequelize, sequelize } = require("../db/db");
 
-const Journal = sequelize.define("Journal", {
+const Text = sequelize.define("Text", {
   title: {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  text: {
+    type: Sequelize.STRING,
+  },
 });
 
-module.exports = { Journal };
+module.exports = { Text };
