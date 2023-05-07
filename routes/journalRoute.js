@@ -26,4 +26,21 @@ router.post("/journal", async (req, res, next) => {
   });
 });
 
+router.put("/journal/:id", async (req, res, next) => {
+  try {
+    const { title } = req.body;
+    const entry = await Journal.findByPk(req.params.id);
+    if (!entry) {
+      return res.status(404).send({ message: "Journal not found" });
+    }
+    entry.title = title;
+    await entry.save();
+    res.status(200).send({
+      title: entry.title,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
