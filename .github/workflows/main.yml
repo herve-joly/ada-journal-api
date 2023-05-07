@@ -1,7 +1,7 @@
 name: Test before Merge
 on:
   pull_request:
-    branches: main
+    branches: [main]
 jobs:
   test:
     name: Test
@@ -12,4 +12,10 @@ jobs:
         with:
           node-version: 16.x
       - run: npm ci
-      - run: npm test:all
+      - run: npm run test:all
+      - name: Merge on success
+        if: ${{ success() }}
+        uses: pullreminders/pull-request-merge@latest
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          merge_method: merge
