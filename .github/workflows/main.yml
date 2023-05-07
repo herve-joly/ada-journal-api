@@ -15,7 +15,7 @@ jobs:
       - run: npm run test:all
       - name: Merge on success
         if: ${{ success() }}
-        uses: pullreminders/pull-request-merge@latest
+        uses: pullreminders/pull-request-merge@v6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           merge_method: merge
