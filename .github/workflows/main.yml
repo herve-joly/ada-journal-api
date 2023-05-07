@@ -1,7 +1,7 @@
 name: Test before Merge
 on:
   pull_request:
-    branches: [main]
+    branches: main
 jobs:
   test:
     name: Test
