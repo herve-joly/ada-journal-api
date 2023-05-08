@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { Journal } = require("../models/Journal");
 
-router.get("/", async (req, res, next) => {
+router.get("/user/:userid/journals", async (req, res, next) => {
   try {
-    const journals = await Journal.findAll();
+    const journals = await Journal.findAll({
+      where: { UserId: req.params.userid },
+    });
     res.send(journals);
   } catch (error) {
     console.error(error);
@@ -12,24 +14,25 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/journal", async (req, res, next) => {
+router.post("/user/:userid/journals", async (req, res, next) => {
   // if (!req.user) {
   //   res.sendStatus(401);
   //   return;
   // }
-  // const UserId = req.user.id;
-  const { title, UserId } = req.body;
-  const journal = await Journal.create({ title, UserId });
+  const journal = await Journal.create({
+    title: req.body.title,
+    UserId: req.params.userid,
+  });
   res.status(201).send({
     title: journal.title,
-    ownerId: journal.UserId,
+    UserId: journal.UserId,
   });
 });
 
-router.put("/journal/:id", async (req, res, next) => {
+router.put("/user/:userid/journals/:journalid", async (req, res, next) => {
   try {
     const { title } = req.body;
-    const entry = await Journal.findByPk(req.params.id);
+    const entry = await Journal.findByPk(req.params.journalid);
     if (!entry) {
       return res.status(404).send({ message: "Journal not found" });
     }
@@ -41,6 +44,26 @@ router.put("/journal/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+router.delete("/user/:userid/journals/:journalid", async (req, res, next) => {
+  const journal = await Journal.findByPk(req.params.journalid);
+  if (!journal) {
+    res.sendStatus(404);
+    return;
+  }
+  // if (journal.UserId !== req.user.id) {
+  //   res.sendStatus(403);
+  //   return;
+  // }
+  await journal.destroy();
+  res.send("Deleted");
+});
+
+router.use((error, req, res, next) => {
+  console.error("SERVER ERROR: ", error);
+  if (res.statusCode < 400) res.status(500);
+  res.send({ error: error.message, name: error.name, message: error.message });
 });
 
 module.exports = router;
