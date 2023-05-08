@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res, next) => {
   try {
-    res.send("<h1>Welcome to the API</p>");
+    res.send("<h1>Welcome to the API</h1>");
   } catch (error) {
     console.error(error);
     next(error);
