@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const { User } = require("../models/User");
 const bcrypt = require("bcrypt");
+require("dotenv").config(".env");
+const JWT = require("jsonwebtoken");
+const SECRET = process.env.SECRET;
 
 router.post("/login", async (req, res, next) => {
   try {
