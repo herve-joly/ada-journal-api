@@ -4,7 +4,7 @@ const { User } = require("../models/User");
 const bcrypt = require("bcrypt");
 require("dotenv").config(".env");
 const JWT = require("jsonwebtoken");
-const SECRET = process.env.SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 router.post("/login", async (req, res, next) => {
   try {
@@ -12,6 +12,10 @@ router.post("/login", async (req, res, next) => {
     const user = await User.findOne({ where: { username } });
     if (!user) return;
     const matches = await bcrypt.compare(password, user.password);
+    // Generate a JWT token
+    const token = JWT.sign({ userId: user.id }, JWT_SECRET, {
+      expiresIn: "1h", // Token expiration time
+    });
     res.send(matches ? "Login" : "Failed");
   } catch (error) {
     console.error(error);
