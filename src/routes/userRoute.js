@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 require("dotenv").config(".env");
 const JWT = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
+const authMiddleware = require("../controler/authMiddleware");
 
 router.post("/login", async (req, res, next) => {
   try {
@@ -23,7 +24,7 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/:userid", async (req, res, next) => {
+router.get("/:userid", authMiddleware, async (req, res, next) => {
   console.log("Hello");
   try {
     const user = await User.findByPk(req.params.userid);

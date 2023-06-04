@@ -76,12 +76,12 @@ describe("API routes", () => {
   describe("User routes", () => {
     describe("POST /users/user", () => {
       it("should create a new user", async () => {
-        const response = await request(app).post("/register").send({
+        const response = await request(app).post("/users").send({
           username: "newuser",
           password: "password789",
         });
         expect(response.status).toBe(200);
-        expect(response.text).toBe("success");
+        expect(response.text).toBe("Success!");
 
         // verify that the user was actually added to the database
         const newUser = await User.findOne({ where: { username: "newuser" } });

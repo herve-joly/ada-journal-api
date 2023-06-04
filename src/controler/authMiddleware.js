@@ -1,4 +1,4 @@
-app.use((req, res, next) => {
+const authMiddleware = (req, res, next) => {
   const header = req.get("Authorization");
 
   if (!header) {
@@ -23,4 +23,6 @@ app.use((req, res, next) => {
     console.log(error);
     res.sendStatus(401);
   }
-});
+};
+
+module.exports = authMiddleware;
