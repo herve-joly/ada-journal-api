@@ -17,7 +17,9 @@ router.post("/login", async (req, res, next) => {
     const token = JWT.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "1h", // Token expiration time
     });
-    res.send(matches ? "Login" : "Failed");
+    res.send(token);
+    next();
+    res.send(token);
   } catch (error) {
     console.error(error);
     next(error);

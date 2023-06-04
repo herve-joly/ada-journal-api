@@ -4,9 +4,7 @@ const Userroute = require("./routes/userRoute");
 const Journalroute = require("./routes/journalRoute");
 const Textroute = require("./routes/textRoute");
 const morgan = require("morgan");
-const bcrypt = require("bcrypt");
-const { User } = require("./db");
-const SALT_COUNT = 10;
+const authMiddleware = require("./controler/authMiddleware");
 
 const app = express();
 
@@ -23,21 +21,9 @@ app.get("/", async (req, res, next) => {
   }
 });
 
-app.post("/register", async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
-    const user = await User.create({ username, password: hashedPassword });
-    res.send("success");
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
 app.use("/users", Userroute);
-app.use("/journals", Journalroute);
-app.use("/texts", Textroute);
+app.use("/journals", authMiddleware, Journalroute);
+app.use("/texts", authMiddleware, Textroute);
 
 app.use((error, req, res, next) => {
   console.error("SERVER ERROR: ", error);
