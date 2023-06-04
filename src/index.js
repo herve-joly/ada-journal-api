@@ -4,7 +4,9 @@ const Userroute = require("./routes/userRoute");
 const Journalroute = require("./routes/journalRoute");
 const Textroute = require("./routes/textRoute");
 const morgan = require("morgan");
-const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const { User } = require("./db");
+const SALT_COUNT = 10;
 
 const app = express();
 
@@ -21,8 +23,12 @@ app.get("/", async (req, res, next) => {
   }
 });
 
-app.get("/register", async (req, res, next) => {
+app.post("/register", async (req, res, next) => {
   try {
+    const { username, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+    const user = await User.create({ username, password: hashedPassword });
+    res.send("success");
   } catch (error) {
     console.error(error);
     next(error);

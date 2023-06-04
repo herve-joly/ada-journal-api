@@ -1,5 +1,5 @@
-const app = require("./index");
-const { sequelize } = require("./db");
+const app = require("./src/index");
+const { sequelize } = require("./src/db");
 
 const PORT = 4000;
 
