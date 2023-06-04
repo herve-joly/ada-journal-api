@@ -1,8 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const Userroute = require("./routes/userRoute");
 const Journalroute = require("./routes/journalRoute");
 const Textroute = require("./routes/textRoute");
 const morgan = require("morgan");
+const authMiddleware = require("./controler/authMiddleware");
 
 const app = express();
 
@@ -12,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res, next) => {
   try {
-    res.send("<h1>Welcome to the API</h1>");
+    res.send("Welcome! \nPlease login");
   } catch (error) {
     console.error(error);
     next(error);
@@ -20,8 +22,8 @@ app.get("/", async (req, res, next) => {
 });
 
 app.use("/users", Userroute);
-app.use("/journals", Journalroute);
-app.use("/texts", Textroute);
+app.use("/journals", authMiddleware, Journalroute);
+app.use("/texts", authMiddleware, Textroute);
 
 app.use((error, req, res, next) => {
   console.error("SERVER ERROR: ", error);

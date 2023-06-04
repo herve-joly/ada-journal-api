@@ -32,8 +32,7 @@
     "morgan": "^1.10.0",
     "node": "^20.0.0",
     "sequelize": "^6.31.1",
-    "sqlite3": "^5.1.6",
-    "terminal-kit": "^3.0.0"
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "jest": "^29.5.0",

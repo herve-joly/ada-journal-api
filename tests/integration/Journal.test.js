@@ -1,4 +1,4 @@
-const { sequelize, Journal } = require("../../db/index");
+const { sequelize, Journal } = require("../../src/db/index");
 
 describe("Journal model", () => {
   beforeAll(async () => {

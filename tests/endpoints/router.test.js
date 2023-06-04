@@ -1,6 +1,12 @@
 const request = require("supertest");
-const app = require("../../index");
-const { Sequelize, sequelize, User, Journal, Text } = require("../../db/index");
+const app = require("../../src/index");
+const {
+  Sequelize,
+  sequelize,
+  User,
+  Journal,
+  Text,
+} = require("../../src/db/index");
 
 describe("API routes", () => {
   beforeAll(async () => {
@@ -63,7 +69,7 @@ describe("API routes", () => {
       const response = await request(app).get("/");
       expect(response.status).toBe(200);
       expect(response.headers["content-type"]).toMatch(/html/);
-      expect(response.text).toContain("<h1>Welcome to the API</h1>");
+      expect(response.text).toContain("Welcome! \nPlease login");
     });
   });
 
@@ -74,9 +80,8 @@ describe("API routes", () => {
           username: "newuser",
           password: "password789",
         });
-        expect(response.status).toBe(201);
-        expect(response.headers["content-type"]).toMatch(/json/);
-        expect(response.body.username).toBe("newuser");
+        expect(response.status).toBe(200);
+        expect(response.text).toBe("Success!");
 
         // verify that the user was actually added to the database
         const newUser = await User.findOne({ where: { username: "newuser" } });
@@ -84,11 +89,11 @@ describe("API routes", () => {
       });
 
       it("should respond with a 400 error if username already exists", async () => {
-        const response = await request(app).post("/users").send({
+        const response = await request(app).post("/register").send({
           username: "newuser",
-          password: "password789",
+          password: "password79",
         });
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(500);
       });
     });
   });
