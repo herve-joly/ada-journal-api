@@ -4,7 +4,6 @@ const Userroute = require("./routes/userRoute");
 const Journalroute = require("./routes/journalRoute");
 const Textroute = require("./routes/textRoute");
 const morgan = require("morgan");
-const authMiddleware = require("./controler/authMiddleware");
 
 const app = express();
 
@@ -22,8 +21,8 @@ app.get("/", async (req, res, next) => {
 });
 
 app.use("/users", Userroute);
-app.use("/journals", authMiddleware, Journalroute);
-app.use("/texts", authMiddleware, Textroute);
+app.use("/journals", Journalroute);
+app.use("/texts", Textroute);
 
 app.use((error, req, res, next) => {
   console.error("SERVER ERROR: ", error);

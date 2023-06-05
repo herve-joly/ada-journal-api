@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 require("dotenv").config(".env");
 const JWT = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
-const authMiddleware = require("../controler/authMiddleware");
 
 router.post("/login", async (req, res, next) => {
   try {
@@ -14,20 +13,22 @@ router.post("/login", async (req, res, next) => {
     if (!user) return;
     const matches = await bcrypt.compare(password, user.password);
     // Generate a JWT token
-    const token = JWT.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: "1h", // Token expiration time
-    });
+    const token = JWT.sign(
+      { userName: user.username, userId: user.id },
+      JWT_SECRET,
+      {
+        expiresIn: "1h", // Token expiration time
+      }
+    );
     res.send(token);
     next();
-    res.send(token);
   } catch (error) {
     console.error(error);
     next(error);
   }
 });
 
-router.get("/:userid", authMiddleware, async (req, res, next) => {
-  console.log("Hello");
+router.get("/:userid", async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.userid);
     res.send(user);
