@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { Text } = require("../models/Text");
+const authMiddleware = require("../controler/authMiddleware");
+
+router.use("/user/:userid/", authMiddleware);
 
 router.get(
   "/user/:userid/journals/:journalid/texts",

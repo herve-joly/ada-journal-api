@@ -1,6 +1,9 @@
 const express = require("express");
+const authMiddleware = require("../controler/authMiddleware");
 const router = express.Router();
 const { Journal } = require("../models/Journal");
+
+router.use("/user/:userid/", authMiddleware);
 
 router.get("/user/:userid/journals", async (req, res, next) => {
   try {
@@ -15,18 +18,19 @@ router.get("/user/:userid/journals", async (req, res, next) => {
 });
 
 router.post("/user/:userid/journals", async (req, res, next) => {
-  // if (!req.user) {
-  //   res.sendStatus(401);
-  //   return;
-  // }
-  const journal = await Journal.create({
-    title: req.body.title,
-    UserId: req.params.userid,
-  });
-  res.status(201).send({
-    title: journal.title,
-    UserId: journal.UserId,
-  });
+  try {
+    const journal = await Journal.create({
+      title: req.body.title,
+      UserId: req.params.userid,
+    });
+    res.send({
+      title: journal.title,
+      UserId: journal.UserId,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 });
 
 router.put("/user/:userid/journals/:journalid", async (req, res, next) => {
