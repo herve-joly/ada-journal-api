@@ -3,7 +3,7 @@ const authMiddleware = require("../controler/authMiddleware");
 const router = express.Router();
 const { Journal } = require("../models/Journal");
 
-router.use("/user/:userid", authMiddleware);
+router.use("/user/:userid/", authMiddleware);
 
 router.get("/user/:userid/journals", async (req, res, next) => {
   try {
@@ -18,11 +18,6 @@ router.get("/user/:userid/journals", async (req, res, next) => {
 });
 
 router.post("/user/:userid/journals", async (req, res, next) => {
-  const user = req.user;
-  if (!user) {
-    console.log(user);
-    return;
-  }
   try {
     const journal = await Journal.create({
       title: req.body.title,

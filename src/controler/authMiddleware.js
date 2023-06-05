@@ -11,8 +11,9 @@ async function authMiddleware(req, res, next) {
     console.error("Missing Authorization header.");
     res.set("WWW-Authenticate", "Bearer");
     res.sendStatus(401);
+    return;
   }
-  next();
+
   const [type, token] = header.split(" ");
   if (type.toLowerCase() !== "bearer" || !token) {
     console.error("Invalid token.");
@@ -20,18 +21,16 @@ async function authMiddleware(req, res, next) {
     return;
   }
   try {
-    console.log(token);
     const user = JWT.verify(token, JWT_SECRET);
     req.user = user;
     const tempUser = await User.findByPk(req.params.userid);
     const requestedUserName = tempUser.username;
-    console.log(requestedUserName);
-    console.log(user.userName);
-    if (user.username !== requestedUserName) {
-      console.log("problem");
+    if (user.userName !== requestedUserName) {
+      console.error("problem");
       res.sendStatus(401);
       return;
     }
+    req.user = user;
     next();
   } catch (error) {
     console.log(error);
