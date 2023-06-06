@@ -3,6 +3,7 @@ const express = require("express");
 const Userroute = require("./routes/userRoute");
 const Journalroute = require("./routes/journalRoute");
 const Textroute = require("./routes/textRoute");
+const Adminroute = require("./routes/adminRoute");
 const morgan = require("morgan");
 
 const app = express();
@@ -23,6 +24,7 @@ app.get("/", async (req, res, next) => {
 app.use("/users", Userroute);
 app.use("/journals", Journalroute);
 app.use("/texts", Textroute);
+app.use("/admin", Adminroute);
 
 app.use((error, req, res, next) => {
   console.error("SERVER ERROR: ", error);
