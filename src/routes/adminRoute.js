@@ -5,21 +5,22 @@ const bcrypt = require("bcrypt");
 require("dotenv").config(".env");
 const JWT = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
-const authMiddleware = require("../controler/authMiddleware");
+const adminAuthMiddleware = require("../controler/adminAuthMiddleware");
+const { Admin } = require("../models/Admin");
 
 router.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ where: { username } });
-    if (!user) {
+    const admin = await Admin.findOne({ where: { username } });
+    if (!admin) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    const matches = await bcrypt.compare(password, user.password);
+    const matches = await bcrypt.compare(password, admin.password);
     // Generate a JWT token
     if (matches) {
       const token = JWT.sign(
-        { userName: user.username, userId: user.id },
+        { userName: admin.username, userId: admin.id, role: admin.role },
         JWT_SECRET,
         {
           expiresIn: "1h", // Token expiration time
@@ -35,7 +36,17 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/:userid", authMiddleware, async (req, res, next) => {
+router.get("/users", adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const user = await User.findAll();
+    res.send(user);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get("/:userid", adminAuthMiddleware, async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.userid);
     res.send(user);
@@ -47,7 +58,7 @@ router.get("/:userid", authMiddleware, async (req, res, next) => {
 
 router.post("/register", async (req, res, next) => {
   try {
-    const search = await User.findOne({
+    const search = await Admin.findOne({
       where: { username: req.body.username },
     });
     if (search) {
@@ -56,12 +67,19 @@ router.post("/register", async (req, res, next) => {
     const SALT_LENGTH = 10;
     const { username, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, SALT_LENGTH);
-    await User.create({ username, password: hashedPassword });
+    await Admin.create({ username, password: hashedPassword, role: "admin" });
     res.send("Success!");
   } catch (error) {
     console.log(error);
     next(error);
   }
+});
+
+//DELETE routes
+router.delete("/:userid", adminAuthMiddleware, async (req, res, next) => {
+  const user = await User.findByPk(req.params.userid);
+  await user.destroy();
+  res.send("Deleted");
 });
 
 router.use((error, req, res, next) => {
