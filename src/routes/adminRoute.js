@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { User } = require("../models/User");
+const { Journal } = require("../models/Journal");
 const bcrypt = require("bcrypt");
 require("dotenv").config(".env");
 const JWT = require("jsonwebtoken");
@@ -71,6 +72,16 @@ router.post("/register", async (req, res, next) => {
     res.send("Success!");
   } catch (error) {
     console.log(error);
+    next(error);
+  }
+});
+
+router.get("/journals", adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const journals = await Journal.findAll();
+    res.send(journals);
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 });
