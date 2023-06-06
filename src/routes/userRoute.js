@@ -7,23 +7,27 @@ const JWT = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 const authMiddleware = require("../controler/authMiddleware");
 
-router.use("/:userid/", authMiddleware);
-
 router.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ where: { username } });
-    if (!user) return;
+    if (!user) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
+
     const matches = await bcrypt.compare(password, user.password);
     // Generate a JWT token
-    const token = JWT.sign(
-      { userName: user.username, userId: user.id },
-      JWT_SECRET,
-      {
-        expiresIn: "1h", // Token expiration time
-      }
-    );
-    res.send(token);
+    if (matches) {
+      const token = JWT.sign(
+        { userName: user.username, userId: user.id },
+        JWT_SECRET,
+        {
+          expiresIn: "1h", // Token expiration time
+        }
+      );
+      res.send(token);
+    }
+
     next();
   } catch (error) {
     console.error(error);
@@ -31,7 +35,7 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/:userid", async (req, res, next) => {
+router.get("/:userid", authMiddleware, async (req, res, next) => {
   try {
     const user = await User.findByPk(req.params.userid);
     res.send(user);
@@ -41,7 +45,7 @@ router.get("/:userid", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
   try {
     const search = await User.findOne({
       where: { username: req.body.username },
@@ -61,12 +65,8 @@ router.post("/", async (req, res, next) => {
 });
 
 //DELETE routes
-router.delete("/:userid", async (req, res, next) => {
+router.delete("/:userid", authMiddleware, async (req, res, next) => {
   const user = await User.findByPk(req.params.userid);
-  // if (!user) {
-  //   res.sendStatus(404);
-  //   return;
-  // }
   await user.destroy();
   res.send("Deleted");
 });

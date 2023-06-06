@@ -56,10 +56,6 @@ router.delete("/user/:userid/journals/:journalid", async (req, res, next) => {
     res.sendStatus(404);
     return;
   }
-  // if (journal.UserId !== req.user.id) {
-  //   res.sendStatus(403);
-  //   return;
-  // }
   await journal.destroy();
   res.send("Deleted");
 });

@@ -22,7 +22,7 @@ router.get(
   "/user/:userid/journals/:journalid/texts/:id",
   async (req, res, next) => {
     try {
-      const texts = await Text.findByPk({ where: { id: req.params.id } });
+      const texts = await Text.findByPk(req.params.id);
       res.send(texts);
     } catch (error) {
       console.error(error);
@@ -34,10 +34,6 @@ router.get(
 router.post(
   "/user/:userid/journals/:journalid/texts",
   async (req, res, next) => {
-    // if (!req.user) {
-    //   res.sendStatus(401);
-    //   return;
-    // }
     const UserId = req.params.userid;
     const JournalId = req.params.journalid;
     const { title, text } = req.body;
@@ -81,10 +77,6 @@ router.delete(
       res.sendStatus(404);
       return;
     }
-    // if (text.UserId !== req.user.id) {
-    //   res.sendStatus(403);
-    //   return;
-    // }
     await text.destroy();
     res.send("Deleted");
   }
