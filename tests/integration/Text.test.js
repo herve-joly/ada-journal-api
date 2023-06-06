@@ -1,4 +1,4 @@
-const { sequelize, Text } = require("../../db/index");
+const { sequelize, Text } = require("../../src/db/index");
 
 describe("Text model", () => {
   beforeAll(async () => {

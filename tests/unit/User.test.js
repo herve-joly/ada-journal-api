@@ -1,4 +1,4 @@
-const { sequelize, Sequelize, User } = require("../../db");
+const { sequelize, Sequelize, User } = require("../../src/db");
 
 describe("User model", () => {
   beforeAll(async () => {
