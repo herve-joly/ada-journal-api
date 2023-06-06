@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { User } = require("../models/User");
+const { Journal } = require("../models/Journal");
+const { Text } = require("../models/Text");
 const bcrypt = require("bcrypt");
 require("dotenv").config(".env");
 const JWT = require("jsonwebtoken");
@@ -46,16 +48,6 @@ router.get("/users", adminAuthMiddleware, async (req, res, next) => {
   }
 });
 
-router.get("/:userid", adminAuthMiddleware, async (req, res, next) => {
-  try {
-    const user = await User.findByPk(req.params.userid);
-    res.send(user);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
 router.post("/register", async (req, res, next) => {
   try {
     const search = await Admin.findOne({
@@ -71,6 +63,29 @@ router.post("/register", async (req, res, next) => {
     res.send("Success!");
   } catch (error) {
     console.log(error);
+    next(error);
+  }
+});
+
+router.get("/journals", adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const journals = await Journal.findAll({
+      include: User,
+    });
+    console.log(journals);
+    res.send(journals);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get("/texts", adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const texts = await Text.findAll({ include: User });
+    res.send(texts);
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 });
