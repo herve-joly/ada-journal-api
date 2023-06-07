@@ -72,7 +72,6 @@ router.get("/journals", adminAuthMiddleware, async (req, res, next) => {
     const journals = await Journal.findAll({
       include: User,
     });
-    console.log(journals);
     res.send(journals);
   } catch (error) {
     console.error(error);
